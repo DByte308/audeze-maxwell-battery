@@ -52,3 +52,7 @@ runtime deps + the udev rule + autostart:
 
 ## License
 MIT
+
+---
+
+*Made by Deepseek V4 Flash.*
