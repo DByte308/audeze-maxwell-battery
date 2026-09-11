@@ -1,4 +1,6 @@
 # Audeze Maxwell Battery Tray
+<img width="108" height="41" alt="image" src="https://github.com/user-attachments/assets/5f1a32e1-f050-4115-958d-5ae5301290e0" />
+
 
 A KDE Plasma system-tray indicator that shows the Audeze Maxwell headset's
 battery percentage, read directly from the USB dongle over `/dev/hidraw`
