@@ -11,6 +11,14 @@ using the Airoha "Race" protocol — no Wine, no Audeze app required.
 - Click for a small menu (status, refresh, quit).
 
 ## Install
+
+### One command (recommended)
+Supports Debian/Ubuntu/Mint, Fedora/Nobara/RHEL, Arch, and openSUSE. Install
+runtime deps + the udev rule + autostart:
+
+    bash install.sh
+
+### Manual
 1. **Grant hidraw access** (needed once, requires root):
 
        sudo bash fix_audeze.sh
@@ -18,7 +26,10 @@ using the Airoha "Race" protocol — no Wine, no Audeze app required.
    This installs `/etc/udev/rules.d/50-audeze.rules` (grants the Audeze dongle
    `3329:4b29` hidraw access to your user) and applies it live.
 
-2. **Run / autostart**
+2. **Install runtime deps** for your distro (python3-gi + an AppIndicator
+   typelib + python3-Pillow + GTK3).
+
+3. **Run / autostart**
 
        chmod +x audeze_battery_tray.py
        ./audeze_battery_tray.py            # run in foreground
