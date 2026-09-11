@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Audeze Maxwell Battery
+Comment=Show Audeze Maxwell dongle battery in the system tray
+Exec=/home/d/.local/bin/audeze_battery_tray.py
+Terminal=false
+X-GNOME-Autostart-enabled=true
