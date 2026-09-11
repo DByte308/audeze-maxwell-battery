@@ -6,6 +6,21 @@ A KDE Plasma system-tray indicator that shows the Audeze Maxwell headset's
 battery percentage, read directly from the USB dongle over `/dev/hidraw`
 using the Airoha "Race" protocol — no Wine, no Audeze app required.
 
+## Supported models
+
+All Audeze Maxwell dongles share the same Race protocol — they differ only by
+USB product id, and all are auto-detected:
+
+| USB PID | Model |
+|---------|-------|
+| `3329:4b19` | Maxwell (v1) |
+| `3329:4b18` | Maxwell v1 — Xbox dongle |
+| `3329:4b29` | Maxwell 2 (PS/PC) |
+| `3329:4b28` | Maxwell 2 — Xbox dongle |
+
+The tray icon always shows just the percentage; the exact model appears when
+you click the icon (e.g. *"Maxwell 2 (PS/PC) — 50%"*).
+
 ## What it does
 - Polls the dongle battery (~every 5 min) and shows a **colourful icon** with
   the percentage (0/25/50/75/100% — the dongle reports a coarse 0–4 scale).

@@ -29,8 +29,16 @@ except (ValueError, ImportError):
     from gi.repository import AyatanaAppIndicator3 as AppIndicator
 
 # ---------- hidraw / Race protocol ----------
-VID = 0x3329          # Audeze LLC
-PID = 0x4b29          # Maxwell Dongle
+VID = 0x3329  # Audeze LLC
+
+# Product ID -> model. All two Maxwell generations share the same Race protocol
+# and 62-byte HID framing; only the USB product id differs.
+SUPPORTED = {
+    0x4b19: "Maxwell (v1)",
+    0x4b18: "Maxwell Xbox (v1)",
+    0x4b29: "Maxwell 2 (PS/PC)",
+    0x4b28: "Maxwell 2 (Xbox)",
+}
 OUT_REPORT_ID = 0x06  # host -> dongle
 IN_REPORT_ID  = 0x07  # dongle -> host
 REPORT_LEN = 62       # report id + 61-byte payload
@@ -66,7 +74,8 @@ def text_color():
 
 
 def find_dongle():
-    """Return an open O_RDWR fd for the Maxwell hidraw node, or None."""
+    """Return (fd, model_name) for the first connected Maxwell dongle, or
+    (None, None)."""
     for path in glob.glob("/dev/hidraw*"):
         try:
             fd = os.open(path, os.O_RDWR | os.O_NONBLOCK)
@@ -76,12 +85,12 @@ def find_dongle():
             info = bytearray(8)
             fcntl.ioctl(fd, HIDIOCGRAWINFO, info)
             bustype, vendor, product = struct.unpack("<Ihh", info)
-            if vendor == VID and product == PID:
-                return fd
+            if vendor == VID and product in SUPPORTED:
+                return fd, SUPPORTED[product]
         except OSError:
             pass
         os.close(fd)
-    return None
+    return None, None
 
 
 def _send(fd, race):
@@ -198,9 +207,9 @@ class Tray(object):
         self._update()
 
     def _update(self):
-        fd = find_dongle()
+        fd, model = find_dongle()
         if fd is None:
-            text = "?"; self.item_label.set_label("Audeze Maxwell — dongle not found")
+            text = "?"; self.item_label.set_label("No Audeze Maxwell detected")
         else:
             try:
                 lvl = get_battery_level(fd)
@@ -209,10 +218,10 @@ class Tray(object):
             if lvl is not None:
                 pct = LEVEL_PCT.get(lvl, lvl * 25)
                 text = f"{pct}%"
-                self.item_label.set_label(f"Audeze Maxwell — {pct}%")
+                self.item_label.set_label(f"{model} — {pct}%")
             else:
                 text = "?"
-                self.item_label.set_label("Audeze Maxwell — no battery data (headset off?)")
+                self.item_label.set_label(f"{model} — no battery data (headset off?)")
         _render_icon(text, ICON_PATH, self.fg)
         self.ind.set_icon_full(ICON_PATH, "Audeze Maxwell battery")
 
